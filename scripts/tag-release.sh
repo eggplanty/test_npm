@@ -29,6 +29,12 @@ if git ls-remote --tags origin "$TAG" | grep -q "$TAG"; then
   exit 0
 fi
 
+# Ensure package.json changes are committed before tagging
+if git diff --name-only | grep -q 'package.json' || git diff --cached --name-only | grep -q 'package.json'; then
+  echo "Error: package.json has uncommitted changes. Please commit before tagging." >&2
+  exit 1
+fi
+
 # Create and push tag
 git tag "$TAG"
 git push origin "$TAG"
