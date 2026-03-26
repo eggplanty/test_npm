@@ -4,11 +4,11 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-# Read version from npm/package.json
-VERSION=$(node -p "require('${REPO_ROOT}/npm/package.json').version")
+# Read version from package.json
+VERSION=$(node -p "require('${REPO_ROOT}/package.json').version")
 
 if [ -z "$VERSION" ]; then
-  echo "Error: could not read version from npm/package.json" >&2
+  echo "Error: could not read version from package.json" >&2
   exit 1
 fi
 
