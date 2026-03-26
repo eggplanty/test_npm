@@ -35,6 +35,15 @@ if git diff --name-only | grep -q 'package.json' || git diff --cached --name-onl
   exit 1
 fi
 
+# Ensure current branch is pushed to remote before tagging
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+LOCAL_SHA=$(git rev-parse HEAD)
+REMOTE_SHA=$(git rev-parse "origin/${CURRENT_BRANCH}" 2>/dev/null || echo "")
+if [ "$LOCAL_SHA" != "$REMOTE_SHA" ]; then
+  echo "Error: local branch '${CURRENT_BRANCH}' is not in sync with remote. Please push your commits first." >&2
+  exit 1
+fi
+
 # Create and push tag
 git tag "$TAG"
 git push origin "$TAG"
