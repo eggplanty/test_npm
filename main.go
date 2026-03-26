@@ -8,11 +8,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var version = "dev"
+
 func main() {
 	rootCmd := &cobra.Command{
-		Use:   "mycli",
-		Short: "A simple CLI demo",
-		Long:  "A demo CLI application built with Go and Cobra.",
+		Use:     "mycli",
+		Short:   "A simple CLI demo",
+		Long:    "A demo CLI application built with Go and Cobra.",
+		Version: version,
 	}
 
 	// greet command
