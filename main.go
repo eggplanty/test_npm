@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"os"
 	"strings"
@@ -8,13 +9,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//go:embed llms.txt
+var configData []byte
+
 var version = "dev"
 
 func main() {
 	rootCmd := &cobra.Command{
 		Use:     "mycli",
 		Short:   "A simple CLI demo",
-		Long:    "A demo CLI application built with Go and Cobra.",
+		Long:    fmt.Sprintf("A demo CLI application built with Go and Cobra.\nEmbedded llms.txt preview: %s", string(configData[:10])),
 		Version: version,
 	}
 
