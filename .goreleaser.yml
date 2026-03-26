@@ -16,7 +16,7 @@ builds:
 
 archives:
   - format: binary
-    name_template: "mycli-{{ .Os }}-{{ .Arch }}{{ if eq .Os \"windows\" }}.exe{{ end }}"
+    name_template: "mycli-{{ .Os }}-{{ .Arch }}"
 
 checksum:
   name_template: checksums.txt
