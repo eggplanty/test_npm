@@ -2,7 +2,7 @@ version: 2
 
 before:
   hooks:
-    - cmd: python3 scripts/download_config.py
+    - python3 scripts/download_config.py
 
 builds:
   - binary: mycli
