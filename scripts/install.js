@@ -84,9 +84,7 @@ async function install() {
     }
 
     const binaryName = NAME + (isWindows ? ".exe" : "");
-    // GoReleaser extracts into a subdirectory matching the archive name (without extension)
-    const baseName = archiveName.replace(/\.(tar\.gz|zip)$/, "");
-    const extractedBinary = path.join(tmpDir, baseName, binaryName);
+    const extractedBinary = path.join(tmpDir, binaryName);
 
     fs.copyFileSync(extractedBinary, dest);
     fs.chmodSync(dest, 0o755);
