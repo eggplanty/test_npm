@@ -98,6 +98,7 @@ def main():
         count = len(data.get("services", []))
         print(f"fetch-meta: OK, {count} services from local fallback", file=sys.stderr)
 
+    os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
     with open(OUT_PATH, "w") as fp:
         json.dump(data, fp, ensure_ascii=False, indent=2)
         fp.write("\n")
