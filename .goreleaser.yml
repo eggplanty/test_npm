@@ -2,7 +2,7 @@ version: 2
 
 before:
   hooks:
-    - python3 scripts/download_config.py
+    - python3 scripts/fetch_meta.py
 
 builds:
   - binary: mycli
