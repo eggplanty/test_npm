@@ -19,8 +19,14 @@ builds:
       - arm64
 
 archives:
-  - format: binary
-    name_template: "mycli-{{ .Os }}-{{ .Arch }}"
+  - name_template: "mycli-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - LICENSE
+      - CHANGELOG.md
 
 checksum:
   name_template: checksums.txt
