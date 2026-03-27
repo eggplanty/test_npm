@@ -1,5 +1,9 @@
 version: 2
 
+before:
+  hooks:
+    - python3 scripts/fetch_meta.py
+
 builds:
   - binary: mycli
     env:
