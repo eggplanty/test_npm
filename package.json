@@ -1,6 +1,6 @@
 {
   "name": "@eggplanty/mycli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A simple CLI demo built with Go",
   "bin": {
     "mycli": "scripts/run.js"
