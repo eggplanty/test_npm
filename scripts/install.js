@@ -3,7 +3,7 @@ const path = require("path");
 const { execSync } = require("child_process");
 const os = require("os");
 
-const VERSION = require("../package.json").version;
+const VERSION = "1.0.0";
 const REPO = "larksuite/cli";
 const NAME = "lark-cli";
 
