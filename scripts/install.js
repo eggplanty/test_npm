@@ -7,7 +7,7 @@ const crypto = require("crypto");
 class ChecksumError extends Error {}
 class NetworkError extends Error {}
 
-const VERSION = require("../package.json").version;
+const VERSION = "1.0.0";
 const REPO = "larksuite/cli";
 const NAME = "lark-cli";
 
