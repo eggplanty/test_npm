@@ -7,9 +7,9 @@ const crypto = require("crypto");
 class ChecksumError extends Error {}
 class NetworkError extends Error {}
 
-const VERSION = "1.0.0";
-const REPO = "larksuite/cli";
-const NAME = "lark-cli";
+const VERSION = require("../package.json").version;
+const REPO = "eggplanty/test_npm";
+const NAME = "mycli";
 
 const PLATFORM_MAP = {
   darwin: "darwin",
@@ -37,7 +37,7 @@ const ext = isWindows ? ".zip" : ".tar.gz";
 const archiveName = `${NAME}-${VERSION}-${platform}-${arch}${ext}`;
 const SOURCES = [
   `https://github.com/${REPO}/releases/download/v${VERSION}/${archiveName}`,
-  `https://registry.npmmirror.com/-/binary/lark-cli/v${VERSION}/${archiveName}`,
+  `https://registry.npmmirror.com/-/binary/mycli/v${VERSION}/${archiveName}`,
 ];
 
 const ALLOWED_INITIAL_HOSTS = new Set([
@@ -211,7 +211,7 @@ function getExpectedChecksum(archiveFilename, checksumPath = DEFAULT_CHECKSUM_PA
 }
 
 async function install() {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "lark-cli-"));
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "mycli-"));
   const archivePath = path.join(tmpDir, archiveName);
 
   try {
@@ -261,7 +261,7 @@ if (require.main === module) {
       console.error(
           `\nIf you are behind a firewall or on a restricted network, try configuring a proxy:\n` +
           `  export https_proxy=http://your-proxy:port\n` +
-          `  npm install -g @larksuite/cli\n`
+          `  npm install -g @eggplanty/mycli\n`
       );
     } else {
       console.error(`\n${NAME} install failed:\n${err.stack || err.message}`);
