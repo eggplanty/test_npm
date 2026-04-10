@@ -6,6 +6,7 @@ const crypto = require("crypto");
 
 class ChecksumError extends Error {}
 class NetworkError extends Error {}
+class PackageIntegrityError extends Error {}
 
 const VERSION = "1.0.0";
 const REPO = "larksuite/cli";
@@ -22,23 +23,8 @@ const ARCH_MAP = {
   arm64: "arm64",
 };
 
-const platform = PLATFORM_MAP[process.platform];
-const arch = ARCH_MAP[process.arch];
-
-if (!platform || !arch) {
-  console.error(
-      `Unsupported platform: ${process.platform}-${process.arch}`
-  );
-  process.exit(1);
-}
-
 const isWindows = process.platform === "win32";
 const ext = isWindows ? ".zip" : ".tar.gz";
-const archiveName = `${NAME}-${VERSION}-${platform}-${arch}${ext}`;
-const SOURCES = [
-  `https://github.com/${REPO}/releases/download/v${VERSION}/${archiveName}`,
-  `https://registry.npmmirror.com/-/binary/lark-cli/v${VERSION}/${archiveName}`,
-];
 
 const ALLOWED_INITIAL_HOSTS = new Set([
   "github.com",
@@ -188,7 +174,8 @@ function verifyChecksum(filePath, expectedHash) {
 
 function getExpectedChecksum(archiveFilename, checksumPath = DEFAULT_CHECKSUM_PATH) {
   if (!fs.existsSync(checksumPath)) {
-    throw new ChecksumError("checksums.txt missing from package");
+    // Packaging bug, not a tamper signal — routed separately.
+    throw new PackageIntegrityError("checksums.txt missing from package");
   }
 
   const contents = fs.readFileSync(checksumPath, "utf-8");
@@ -211,6 +198,21 @@ function getExpectedChecksum(archiveFilename, checksumPath = DEFAULT_CHECKSUM_PA
 }
 
 async function install() {
+  const platform = PLATFORM_MAP[process.platform];
+  const arch = ARCH_MAP[process.arch];
+  if (!platform || !arch) {
+    throw new Error(
+        `Unsupported platform: ${process.platform}-${process.arch}. ` +
+        `Download manually from ` +
+        `https://github.com/${REPO}/releases/tag/v${VERSION}`
+    );
+  }
+  const archiveName = `${NAME}-${VERSION}-${platform}-${arch}${ext}`;
+  const sources = [
+    `https://github.com/${REPO}/releases/download/v${VERSION}/${archiveName}`,
+    `https://registry.npmmirror.com/-/binary/lark-cli/v${VERSION}/${archiveName}`,
+  ];
+
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "lark-cli-"));
   const archivePath = path.join(tmpDir, archiveName);
 
@@ -220,7 +222,7 @@ async function install() {
     const expectedHash = getExpectedChecksum(archiveName);
 
     // 2. Multi-source download; only NetworkError triggers fallback.
-    const sourceUrl = downloadWithFallback(SOURCES, archivePath);
+    const sourceUrl = downloadWithFallback(sources, archivePath);
 
     // 3. Integrity check outside the fallback loop. Mismatch aborts
     //    the entire install, does NOT try the next source.
@@ -248,7 +250,14 @@ async function install() {
 
 if (require.main === module) {
   install().catch((err) => {
-    if (err instanceof ChecksumError) {
+    if (err instanceof PackageIntegrityError) {
+      console.error(`\n${NAME} install aborted: the installed package looks broken.\n`);
+      console.error(err.message);
+      console.error(
+          `\nRe-install the package; if the issue persists, please report it:\n` +
+          `  https://github.com/${REPO}/issues\n`
+      );
+    } else if (err instanceof ChecksumError) {
       console.error(`\n[SECURITY] ${NAME} install aborted due to integrity check failure:\n`);
       console.error(err.message);
       console.error(
@@ -275,4 +284,5 @@ module.exports = {
   getExpectedChecksum,
   ChecksumError,
   NetworkError,
+  PackageIntegrityError,
 };
